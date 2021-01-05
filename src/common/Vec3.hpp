@@ -8,7 +8,7 @@ template <typename T>
 class Vec3 {
     public:
 
-        Vec3();
+        Vec3() {};
         Vec3(T x, T y, T z) : data{x, y, z} {}
 
         T x() const { return data[0]; }
@@ -88,17 +88,17 @@ inline Vec3<T> operator+(const Vec3<T> &u, const Vec3<T> &v) {
 
 template <typename T>
 inline Vec3<T> operator-(const Vec3<T> &u, const Vec3<T> &v) {
-    return vec3(u.data[0] - v.data[0], u.data[1] - v.data[1], u.data[2] - v.data[2]);
+    return Vec3(u.data[0] - v.data[0], u.data[1] - v.data[1], u.data[2] - v.data[2]);
 }
 
 template <typename T>
 inline Vec3<T> operator*(const Vec3<T> &u, const Vec3<T> &v) {
-    return vec3(u.data[0] * v.data[0], u.data[1] * v.data[1], u.data[2] * v.data[2]);
+    return Vec3(u.data[0] * v.data[0], u.data[1] * v.data[1], u.data[2] * v.data[2]);
 }
 
 template <typename T>
 inline Vec3<T> operator*(double t, const Vec3<T> &v) {
-    return vec3(t*v.data[0], t*v.data[1], t*v.data[2]);
+    return Vec3(t*v.data[0], t*v.data[1], t*v.data[2]);
 }
 
 template <typename T>

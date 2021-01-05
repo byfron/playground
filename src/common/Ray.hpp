@@ -8,10 +8,10 @@ class Ray {
 
         Ray() {}
         Ray(const Point3& orig, const Vec3d& dir) : orig(orig), dir(dir) {}
-        Point3 origin() { return orig; }
-        Vec3d direction() { return dir; }
+        Point3 origin() const { return orig; }
+        Vec3d direction() const { return dir; }
 
-        Point3 at(double t) {
+        Point3 at(double t) const {
             return orig + dir*t;
         }
 

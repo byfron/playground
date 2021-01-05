@@ -9,12 +9,14 @@ set(SOURCES
   imstb_rectpack.h
   imstb_textedit.h
   imstb_truetype.h
-  imgui_impl_glfw.cpp
-  imgui_impl_glfw.h
+  imgui_impl_sdl.cpp
+  imgui_impl_sdl.h
   imgui_impl_opengl3.cpp
   imgui_impl_opengl3.h
   gl3w/GL/gl3w.c
   )
+
+find_package(SDL2 REQUIRED)
 
 add_library(LIBIMGUI ${SOURCES})  
 target_link_libraries(LIBIMGUI ${SDL2_LIBRARIES} GL dl)

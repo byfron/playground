@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <common/Camera.hpp>
+#include <renderer/Sphere.hpp>
+#include <vector>
+#include <memory>
 
 Color ray_color(const Ray& r) {
     Vec3d unit_direction = unit_vector(r.direction());
@@ -12,14 +15,22 @@ Color ray_color(const Ray& r) {
     return (1.0-t)*Color(1.0, 1.0, 1.0) + t*Color(0.5, 0.7, 1.0);
 }
 
-void renderScene(SDL_Renderer* renderer, Camera* camera) {
+void renderScene(SDL_Renderer* renderer, std::vector<std::shared_ptr<Object> > objects, Camera* camera) {
     
     for (int j = camera->image_height()-1; j >= 0; --j) {
         for (int i = 0; i < camera->image_width(); ++i) {
             auto u = double(i) / (camera->image_width()-1);
             auto v = double(j) / (camera->image_height()-1);
             auto ray = camera->compute_ray(u, v);
+
             Color pixel_color = ray_color(ray);
+            for (auto& object : objects) {
+                HitRecord record;
+                if (object->hit(ray, 0, 10, record)) {
+                    pixel_color = 0.5*Color(record.normal.x()+1, record.normal.y()+1, record.normal.z()+1);
+                }
+            }
+
             SDL_SetRenderDrawColor(renderer, pixel_color.x() * 255, pixel_color.y() * 255, pixel_color.z() * 255, 255);
             SDL_RenderDrawPoint(renderer, i, j);
         }
@@ -28,8 +39,11 @@ void renderScene(SDL_Renderer* renderer, Camera* camera) {
 
 int main() {
 
+    std::vector<std::shared_ptr<Object> > objects;
+    objects.push_back(std::make_shared<Sphere>(Point3(0,0,-1), 0.5));
+
     double aspect_ratio = 16.0 / 9.0;
-    int width = 400;
+    int width = 600;
     int height = static_cast<int>(width / aspect_ratio);
     Camera camera = Camera(width, height);
 
@@ -107,7 +121,7 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
 
-        renderScene(renderer, &camera);
+        renderScene(renderer, objects, &camera);
 
         
         SDL_RenderPresent(renderer);
